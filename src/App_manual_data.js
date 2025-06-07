@@ -1,38 +1,23 @@
 import { useEffect, useState } from 'react';
 import './App.css';
-import { Nutrition } from './Nutrition';
-import RipplePage from './Ripple/RipplePage';
-import Swal from 'sweetalert2';
+import { Nutrition } from './Nutrition.js';
+import { data } from './data.js';
+import RipplePage from './Ripple/RipplePage.js';
 
 function App() {
+  const kk = 48;
   const APP_ID = "6de0115b";
   const APP_KEY = "334f1ba8e1a6c6fddfed20203585a585";
   const APP_URL = "https://api.edamam.com/api/nutrition-details";
   // const FULL_URL = "https://api.edamam.com/api/nutrition-details?app_id=6de0115b&app_key=334f1ba8e1a6c6fddfed20203585a585";
 
   const [mySearch, setMySearch] = useState("");
-  const [wordSubmit, setWordSubmit] = useState("1 avocado");
+  const [wordSubmit, setWordSubmit] = useState("1 spoon sugar");
   const [myResult, setMyResult] = useState();
   const [stateRipper, setStateRipper] = useState(false);
 
-  useEffect(() => {
-    // console.log("UseEffect");
-    if (wordSubmit !== '') {
-      let ingr = wordSubmit.split(/\s*[,,;,+,\n,\r]\s*/);
-      // console.log(ingr);
-      getResult(ingr);
-    }
-    else {
-      // console.log("Empty");
-      // alert('You have not entered anything');
-      Swal.fire({
-        title: "You have not entered anything",
-        text: "",
-        icon: "warning",
-        confirmButtonColor: '#c3d196'
-      });
-    }
-  }, [wordSubmit])
+  const [clothes, setClothes] = useState(data);
+
 
   const getResult = async (ingr) => {
     setStateRipper(true);
@@ -49,17 +34,10 @@ function App() {
     if (response.ok) {
       setStateRipper(false);
       const data = await response.json();
-      // console.log(data);
+      console.log(data);
       setMyResult(data);
     } else {
-      setStateRipper(false);
-      // alert('Ingredients entered incorrectly');
-      Swal.fire({
-        title: "Ingredients entered incorrectly",
-        text: "",
-        icon: "warning",
-        confirmButtonColor: '#c3d196'
-      });
+      alert('ingredients entered incorrectly');
     }
   }
 
@@ -76,7 +54,6 @@ function App() {
   return (
     <div className="App container">
       { stateRipper && <RipplePage /> }
-
       <div>
         <h1>Nutrition Analysis</h1>
       </div>
@@ -93,17 +70,14 @@ function App() {
       </div>
 
       <div>
-        {
-          myResult && <p className="kkl">Энергетическая ценность - <b>{myResult.calories}</b> kcal</p>
-        }
+        <p className="kkl">Энергетическая ценность - <b>{kk}</b> kcal</p>
 
         {
-          myResult && Object.values(myResult.totalNutrients)
-            .map(({ label, quantity, unit }, index) =>
+          clothes.map((item, index) =>
               <Nutrition key={index}
-                label={label}
-                quantity={quantity}
-                unit={unit}
+                label={item.label}
+                quantity={item.quantity}
+                unit={item.unit}
               />
             )
         }
